@@ -1,0 +1,15 @@
+#!/bin/bash
+export TTY
+
+# cd $HOME/go/src/github.com/codelingo/codelingo
+
+dir="$1"
+if ! test -d "$dir"; then
+	echo "$0 <tenets directory>"
+	exit 1
+fi
+: ${dir:="$HOME/source/git/mullikine/codelingo"}
+
+find "$dir" -name 'codelingo.yaml' | while read line; do
+    cat "$line" | migrate-codelingo-yaml | sponge "$line";
+done

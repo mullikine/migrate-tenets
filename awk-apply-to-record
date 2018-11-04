@@ -1,0 +1,41 @@
+#!/bin/bash
+export TTY
+
+RECORD=
+while [ $# -gt 0 ]; do opt="$1"; case "$opt" in
+    -R) {
+        RECORD="$2"
+        shift
+        shift
+    }
+    ;;
+
+    *) break;
+esac; done
+
+
+read -r -d '' awkscript <<'HEREDOC'
+{
+    # print NR
+    if (r == "" || NR == r) {
+        if (NR == 1) {
+            printf "%s", $0 |& cmd;
+        } else {
+            printf "%s%s", RS, $0 |& cmd;
+        }
+
+        close(cmd, "to");
+        cmd |& getline $0;
+
+        fflush(cmd);
+        close(cmd);
+    } else {
+        if (NR > 1) {
+            print RS
+        }
+    }
+}
+{ print; system(""); }
+HEREDOC
+ 
+gawk -v r="$RECORD" -v RS="$1" -v ORS="" -v cmd="$2 | sed 's/$1/__RS_PLACEHOLDER__/'" -v FS=" " -v OFS=" " "$awkscript" | sed "s/__RS_PLACEHOLDER__/$1/"

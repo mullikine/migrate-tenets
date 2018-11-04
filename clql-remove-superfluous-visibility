@@ -1,0 +1,5 @@
+#!/bin/bash
+export TTY
+
+sed-delete-2nd-of-two-consecutive-lines-if-match "private == \"false\"" "public == \"true\"" | \
+sed-delete-2nd-of-two-consecutive-lines-if-match "private == \"true\"" "public == \"false\""

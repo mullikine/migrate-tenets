@@ -1,0 +1,4 @@
+#!/bin/bash
+export TTY
+
+awk-apply-to-record -R 2 "tenets:" "awk-apply-to-record '  - name:' migrate-tenet"

@@ -1,0 +1,83 @@
+#!/bin/bash
+export TTY
+
+# DONE: functions: -> funcs:
+
+# Notes:
+# I don't think an empty line before tenets: will prevent it from
+# working. YAML is pretty resilient.
+
+p() {
+    printf -- "%s" "$@"
+}
+
+get_singleline_doc() {
+    sed -n 's/^\s\+doc: //p'
+}
+
+rm_singleline_doc() {
+    sed '/^\s\+doc: /d'
+}
+
+get_multiline_doc() {
+    IFS= read -rd '' input < <(cat /dev/stdin)
+
+    upto_doc_removed="$( p "$input" "$input" | sed "0,/doc: |/d" )"
+    sindent="$(p "$upto_doc_removed" | head -n 1 | sed 's/^\(\s\+\).*/\1/')"
+    next_indent="$(p "$sindent" | sed 's/..//')"
+    doc="$(p "$upto_doc_removed" | sed "/^${next_indent}[^ ]/,$ d")"
+    p "$doc" | remove-prefix "$sindent"
+}
+
+rm_multiline_doc() {
+    IFS= read -rd '' input < <(cat /dev/stdin | awk 1)
+
+    upto_doc_removed="$( p "$input" | sed "0,/doc: |/d" )"
+    sindent="$(p "$upto_doc_removed" | head -n 1 | sed 's/^\(\s\+\).*/\1/')"
+    next_indent="$(p "$sindent" | sed 's/..//')"
+
+    p "$input" | sed "/doc: |/,$ d"                    # up to doc
+    p "$upto_doc_removed" | sed -n "/^${next_indent}[^ ]/,$ p"  # after doc
+}
+
+doc_to_flow() {
+    IFS= read -rd '' yaml < <(cat /dev/stdin | awk 1)
+
+    if p "$yaml" | grep -q -P 'codelingo/docs:'; then
+        p "$yaml"
+        return 0
+    fi
+
+    if p "$yaml" | grep -q -P 'doc: \|'; then
+        doc="$(p "$yaml" | get_multiline_doc)"
+        yaml="$(p "$yaml" | rm_multiline_doc)"
+    elif p "$yaml" | grep -q -P 'doc: '; then
+        doc="$(p "$yaml" | get_singleline_doc)"
+        yaml="$(p "$yaml" | rm_singleline_doc)"
+    else
+        doc=
+    fi
+
+    # printf -- "%s" "$yaml" | tv &>/dev/null
+
+    exec < <(printf -- "%s" "$yaml")
+
+    # Tenet name = uniquely identify tenet within bundle.
+    # Title = section heading in contributer docs
+
+    read -r -d '' docflow <<HEREDOC
+codelingo/docs:
+  title: Title in Docs
+  body: |
+$(p "$doc" | indent 4)
+HEREDOC
+
+    sed '/flows:/r '<( printf -- "%s\n" "$docflow" | indent 6 )
+}
+
+doc_to_flow | \
+    sed 's/^functions:/funcs:/' | \
+    awk-apply-to-record -R 2 "query:" "clql-migrate"
+
+# be careful. flows: can come after query:
+# $HOME/source/git/mullikine/codelingo/tenets/modica/default/transport/codelingo.yaml

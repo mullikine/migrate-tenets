@@ -1,0 +1,13 @@
+#!/bin/bash
+export TTY
+
+# TODO -- use github suggest
+
+sed '/^\s*@ \?var\b/d' | `# var is no longer a thing` \
+sed '/^\s*@ \?[a-z]\+\(\.[a-z]\+\)\+$/{s/@ /@/g}' | `# remove extra space after @` \
+sed '/^\s*@ \?[a-z]\+\(\.[a-z]\+\)\+$/{s/\./ /g}' `# @playground.highlight -> @playground highlight` | \
+sed 's/go.file({depth: \(any\)}):/go.file(depth = \1)/' | \
+clql-remove-superfluous-visibility
+
+# this breaks the funcs section
+#sed 's/^\(\s\+[_a-z]\+\): \([^|]\)/\1 == \2/' | \
