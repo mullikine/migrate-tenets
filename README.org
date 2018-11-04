@@ -6,4 +6,5 @@ All of these scripts must be added to the path.
 #+END_SRC
 
 ** Dependencies
-| ~iconv~ | usually present on mac os x and linux |
+| ~iconv~     | usually present on mac os x and linux | ~apt install libc-bin~  |
+| ~moreutils~ | unually present on mac os x and linux | ~apt install moreutils~ |
