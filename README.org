@@ -1,0 +1,6 @@
+* How to use
+All of these scripts must be added to the path.
+
+#+BEGIN_SRC sh
+  migrate-all-tenets /my/tenet/dir
+#+END_SRC
