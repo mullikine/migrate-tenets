@@ -14,16 +14,16 @@ find "$dir" -name 'codelingo.yaml' | while read fp; do
     dirname "$fp"
 done | sort | uniq | while read dn; do
     dn_bn="$(basename "$dn")"
-    dn_slug="$(printf -- "%s" "$dn_bn" | slugify)"
+    if ! test "$dn_bn" == "."; then
+        dn_dn="$(dirname "$dn")"
+        echo "$dn"
+        dn_slug="$(printf -- "%s" "$dn_bn" | slugify)"
 
-    good_path="$dn_dn/$dn_slug"
+        good_path="$dn_dn/$dn_slug"
 
-    if test "$dn_bn" != "$dn_slug" && ! test -e "$good_path"; then
-        dn_dn="$(basename "$dn")"
-
-        cmd="mv \"$dn\" \"$good_path\""
-
-        yn "do this? $cmd" && eval "$cmd"
+        if test "$dn_bn" != "$dn_slug" && ! test -e "$good_path"; then
+            mv "$dn" "$good_path"
+        fi
     fi
 done
 
