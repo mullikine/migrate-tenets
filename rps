@@ -1,0 +1,15 @@
+#!/bin/bash
+count="$1"
+shift
+
+: ${count:="1"}
+
+if stdin_exists; then
+    IFS= read -rd '' input < <(cat /dev/stdin)
+else
+    input="$1"
+fi
+
+for (( i = 0; i < count; i++ )); do
+    printf -- "%s" "$input"
+done
