@@ -5,10 +5,27 @@ export TTY
 
 dir="$1"
 if ! test -d "$dir"; then
-	echo "$0 <tenets directory>"
-	exit 1
+    echo "$0 <tenets directory>"
+    exit 1
 fi
-: ${dir:="$HOME/source/git/mullikine/codelingo"}
+
+# Ensure tenet dirs are valid (dashes, not underscores)
+find "$dir" -name 'codelingo.yaml' | while read fp; do
+    dirname "$fp"
+done | sort | uniq | while read dn; do
+    dn_bn="$(basename "$dn")"
+    dn_slug="$(printf -- "%s" "$dn_bn" | slugify)"
+
+    good_path="$dn_dn/$dn_slug"
+
+    if test "$dn_bn" != "$dn_slug" && ! test -e "$good_path"; then
+        dn_dn="$(basename "$dn")"
+
+        cmd="mv \"$dn\" \"$good_path\""
+
+        yn "do this? $cmd" && eval "$cmd"
+    fi
+done
 
 find "$dir" -name 'codelingo.yaml' | while read line; do
     cat "$line" | migrate-codelingo-yaml | sponge "$line";
