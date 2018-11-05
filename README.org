@@ -1,9 +1,23 @@
 * How to use
-All of these scripts must be added to the path.
-
 #+BEGIN_SRC sh
+  # Migrate all scripts here, recursively
+  migrate-all-tenets .
+
+  # Migrate all scripts in this dir, recursively
   migrate-all-tenets /my/tenet/dir
+
+  # Migrate one codelingo.yaml file with output to stdout
+  cat codelingo.yaml | migrate-codelingo.yaml
+
+  # Migrate one codelingo.yaml file, replacing the file
+  cat codelingo.yaml | migrate-codelingo.yaml | sponge codelingo.yaml
 #+END_SRC
+
+* Example
+https://asciinema.org/a/XiB9Qbmb94F9CMMnYRUHUGpvM
+
+* Installation
+All of these scripts must be added to the path.
 
 ** Dependencies
 | ~iconv~     | usually present on ~macOS~ and ~linux~          | ~apt install libc-bin~                    |
