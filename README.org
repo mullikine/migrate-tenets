@@ -14,7 +14,7 @@
 #+END_SRC
 
 * Example
-https://asciinema.org/a/XiB9Qbmb94F9CMMnYRUHUGpvM
+https://asciinema.org/a/YoVcWIMoFVnoE4MUBb0xiCvIz
 
 * Installation
 All of these scripts must be added to the path.
