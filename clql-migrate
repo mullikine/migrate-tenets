@@ -6,7 +6,7 @@ export TTY
 sed '/^\s*@ \?var\b/d'                            | ` # var is no longer a thing                       ` \
 sed '/^\s*@ \?[a-z]\+\(\.[a-z]\+\)\+$/{s/@ /@/g}' | ` # remove extra space after @                     ` \
 sed '/^\s*@ \?[a-z]\+\(\.[a-z]\+\)\+$/{s/\./ /g}' | ` # @playground.highlight -> @playground highlight ` \
-sed 's/({depth: \(any\)})/(depth = \1)/'          | \
+sed 's/({\([a-z]\+\): \([^ ]\+\)})/(\1 = \2)/'    | ` # ({depth: (any)}) -> (depth = any)              ` \
 sed 's/(depth = 0:0)/(depth = any)/'              | \
 clql-remove-superfluous-visibility
 
