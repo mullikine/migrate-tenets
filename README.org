@@ -6,5 +6,7 @@ All of these scripts must be added to the path.
 #+END_SRC
 
 ** Dependencies
-| ~iconv~     | usually present on mac os x and linux | ~apt install libc-bin~  |
-| ~moreutils~ | unually present on mac os x and linux | ~apt install moreutils~ |
+| ~iconv~     | usually present on ~macOS~ and ~linux~          | ~apt install libc-bin~                    |
+| ~moreutils~ | unually present on ~macOS~ and ~linux~          | ~apt install moreutils~                   |
+| ~gawk~      | Must install on mac using brew                  | ~apt install gawk~ or ~brew install gawk~ |
+| ~sed~       | ~macOS~ / ~BSD~ sed compatible (no ~-u~ or ~I~) |                                           |
